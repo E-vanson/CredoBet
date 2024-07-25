@@ -1,0 +1,11 @@
+{
+  "script": {
+    "dev": "nodemon USSD/ussd.js"
+  },
+  "dependencies": {
+    "africastalking": "^0.7.0",
+    "express": "^4.19.2",
+    "nodemon": "^3.1.4",
+    "ussd-menu-builder": "^1.2.0"
+  }
+}
