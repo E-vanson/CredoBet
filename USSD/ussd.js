@@ -35,6 +35,39 @@ async function sendSms({ msg }) {
     }
 }
 
+async function withdrawAirtime({ amnt }) {
+    console.log("Withdraw func start call...");
+    console.log(phoneNum.substring(1) + " number")
+    try {
+        const response = await axios.post("https://0b47-41-139-168-163.ngrok-free.app/send_airtime", {
+            phone_number: phoneNum,
+            amount: amnt,
+            currency_code: "KES"
+            
+        });
+        console.log("Response received:", response.data);
+    } catch (error) {
+        console.error("Error sending airtime:", error);
+    }
+}
+
+async function topUp({ amnt }) {
+    console.log("Withdraw func start call...");
+    console.log(phoneNum.substring(1) + " number")
+    try {
+        const response = await axios.post("https://0b47-41-139-168-163.ngrok-free.app/send_airtime", {
+            phone_number: phoneNum,
+            amount: amnt,
+            currency_code: "KES"
+            
+        });
+        console.log("Response received:", response.data);
+    } catch (error) {
+        console.error("Error sending airtime:", error);
+    }
+}
+
+
 menu.startState({
     run: () => {
         menu.con(
@@ -65,6 +98,50 @@ menu.state("Account", {
     },
     defaultNext: "invalidOption",
 });
+
+menu.state("Top Up", {
+    run: () => {
+        menu.con(
+            "Enter amount"
+        );
+    },
+    next: {
+       '*\\d+': 'topup.amount'
+    },
+    defaultNext: "invalidOption",
+});
+
+menu.state("Withdraw", {
+    run: () => {
+        menu.con(
+            "Enter amount"
+        );
+    },
+    next: {
+        '*\\d+': 'withdraw.amount'
+    },
+    defaultNext: "invalidOption",
+});
+
+menu.state('topup.amount', {
+    run: () => {
+        let tAmount = menu.val;
+        menu.end('Your request is being processed. Kindly wait for an SMS');
+        sendSms({ msg: `To topup dial *140*${tAmount}*+ 254701458323#` });
+    },
+});
+
+
+menu.state('withdraw.amount', {
+    run: () => {
+        let wAmount = menu.val
+        menu.end(`You withdrawal for ${wAmount} is being processed. Kindly wait for an SMS.`);
+        withdrawAirtime({amnt: wAmount})
+       // sendSms({ msg: "Withdraw successfull" });
+    },
+});
+
+
 
 menu.state("Quick Bet", {
     run: () => {
@@ -122,7 +199,7 @@ menu.state("Man United - 1.4", {
         menu.con("Place your stake ");
     },
     next: {
-        '*[0-9]+': 'Stake'
+        '*\\d+': 'Stake'
     },
     defaultNext: "invalidOption",
 });
@@ -135,8 +212,9 @@ menu.state("Terms & Conditions", {
 
 menu.state('Stake', {
     run: () => {
+        let stake = menu.val
         menu.end('You have placed your bet successfully. Kindly wait for an SMS.');
-        sendSms({ msg: "Bet placed successfully" });
+        sendSms({ msg: `Bet for Man United placed successfully with a stake of ${stake}` });
     },
 });
 
